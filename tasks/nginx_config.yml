@@ -1,0 +1,21 @@
+---
+- name: Ensure docroot exists
+  file:
+    path: "{{ nginx_docroot }}"
+    state: directory
+
+- name: Copy example index.html file in place
+  copy:
+    src: files/index.html
+    dest: "{{ nginx_docroot }}/index.html"
+    mode: 0755
+
+- name: Copy Nginx server configuration in place
+  template:
+    src: templates/https.conf.j2
+    dest: "/etc/nginx/sites-enabled/https.conf"
+    mode: 0644
+  notify: restart nginx
+
+- name: test nginx configuration
+  command: nginx -t

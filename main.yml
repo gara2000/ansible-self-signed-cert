@@ -1,0 +1,22 @@
+---
+- name: Create a Self Signed certificate
+  hosts: web
+
+  vars_files:
+    - vars/main.yml
+
+  pre_tasks:
+    - name: Ensure apt cache is updated
+      apt: update_cache=yes cache_valid_time=600
+    
+    - name: Install dependency for pyopenssl
+      apt: name=libssl-dev state=present
+
+  roles:
+    - geerlingguy.firewall
+    - geerlingguy.pip
+    - geerlingguy.nginx
+
+  tasks:
+    - import_tasks: tasks/self-signed-cert.yml
+    - import_tasks: tasks/nginx_config.yml
